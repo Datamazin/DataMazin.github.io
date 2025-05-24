@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB Standings</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>MLB Standings</h1>
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="../index.html#about">About</a>
+            <a href="../index.html#blog">Blog</a>
+        </nav>
+    </header>
+    <main>
+    <div class="standings-container">
+        <div class="league-table">
+            <h2>American League</h2>
+            <table id="al-standings-table">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- AL Standings will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="league-table">
+            <h2>National League</h2>
+            <table id="nl-standings-table">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- NL Standings will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        // Fetch American League (leagueId=103)
+        fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103')
+            .then(response => response.json())
+            .then(data => {
+                const records = data.records || [];
+                const tbody = document.querySelector('#al-standings-table tbody');
+                if (records.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">No standings found.</td></tr>';
+                    return;
+                }
+                records.forEach(record => {
+                    const division = record.division.name;
+                    record.teamRecords.forEach(teamRecord => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${teamRecord.team.name}</td>
+                            <td>${teamRecord.wins}</td>
+                            <td>${teamRecord.losses}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                });
+            });
+
+        // Fetch National League (leagueId=104)
+        fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=104')
+            .then(response => response.json())
+            .then(data => {
+                const records = data.records || [];
+                const tbody = document.querySelector('#nl-standings-table tbody');
+                if (records.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">No standings found.</td></tr>';
+                    return;
+                }
+                records.forEach(record => {
+                    const division = record.division.name;
+                    record.teamRecords.forEach(teamRecord => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${teamRecord.team.name}</td>
+                            <td>${teamRecord.wins}</td>
+                            <td>${teamRecord.losses}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                });
+            });
+    </script>
+    </main>
+    <footer>
+        <p>&copy; 2024 DataMazin. All rights reserved.</p>
+    </footer>
+</body>
+</html>

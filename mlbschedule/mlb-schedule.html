@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB Schedule of Games</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>MLB Schedule of Games</h1>
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="../index.html#about">About</a>
+            <a href="../index.html#blog">Blog</a>
+        </nav>
+    </header>
+    <main>
+        <script>
+        // Example endpoint (replace with your actual MLB schedule API)
+        fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=2025-05-18')
+            .then(response => response.json())
+            .then(data => {
+                const games = data.dates[0]?.games || [];
+                const scheduleList = document.getElementById('schedule');
+                games.forEach(game => {
+                    const li = document.createElement('li');
+                    li.textContent = `${game.teams.away.team.name} at ${game.teams.home.team.name} - ${game.gameDate}`;
+                    scheduleList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                document.getElementById('schedule').textContent = 'Could not load schedule.';
+            });
+    </script>
+    <ul id="schedule"></ul>
+    <footer>
+        <p>&copy; 2024 DataMazin. All rights reserved.</p>
+    </footer>
+</body>
+</html>
