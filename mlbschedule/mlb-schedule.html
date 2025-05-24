@@ -18,7 +18,7 @@
     <main>
         <script>
         // Example endpoint (replace with your actual MLB schedule API)
-        fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=2025-05-21')
+        fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=2025-05-24')
             .then(response => response.json())
             .then(data => {
                 const games = data.dates[0]?.games || [];
