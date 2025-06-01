@@ -17,8 +17,14 @@
     </header>
     <main>
         <script>
-        // Example endpoint (replace with your actual MLB schedule API)
-        fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=2025-05-24')
+        // Dynamically get today's date in YYYY-MM-DD format
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${todayStr}`)
             .then(response => response.json())
             .then(data => {
                 const games = data.dates[0]?.games || [];
