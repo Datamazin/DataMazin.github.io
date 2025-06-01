@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB Scores</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>MLB Scores</h1>
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="../index.html#about">About</a>
+            <a href="../index.html#blog">Blog</a>
+        </nav>
+    </header>
+    <main>
+        <script>
+        // Dynamically get today's date in YYYY-MM-DD format
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${todayStr}`)
+            .then(response => response.json())
+            .then(data => {
+                const games = data.dates[0]?.games || [];
+                const scheduleList = document.getElementById('schedule');
+                games.forEach(game => {
+                    const li = document.createElement('li');
+                    // Convert gameDate to Eastern Time
+                    const gameDateUTC = new Date(game.gameDate);
+                    const options = {
+                        timeZone: 'America/New_York',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    };
+                    const easternTime = gameDateUTC.toLocaleString('en-US', options);
+
+                    // Get scores if available
+                    let scoreText = '';
+                    if (game.teams.away.score !== undefined && game.teams.home.score !== undefined) {
+                        scoreText = ` | Score: ${game.teams.away.team.name} ${game.teams.away.score} - ${game.teams.home.score} ${game.teams.home.team.name} ${game.status.detailedState} ${game.status.abstractGameState}`;
+                        // Add boxscore link
+                        const boxscoreUrl = `https://www.mlb.com/gameday/${game.gamePk}`;
+                        scoreText += ` <a href="${boxscoreUrl}" >Boxscore</a>`;
+                    }
+
+                    li.innerHTML = `${game.teams.away.team.name} at ${game.teams.home.team.name} - ${easternTime} ET${scoreText}`;
+                    // Append the list item to the schedule list    
+                    scheduleList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                document.getElementById('schedule').textContent = 'Could not load schedule.';
+            });
+    </script>
+    <ul id="schedule"></ul>
+    <footer>
+        <p>&copy; 2024 DataMazin. All rights reserved.</p>
+    </footer>
+</body>
+</html>
