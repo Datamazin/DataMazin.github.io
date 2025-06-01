@@ -31,7 +31,19 @@
                 const scheduleList = document.getElementById('schedule');
                 games.forEach(game => {
                     const li = document.createElement('li');
-                    li.textContent = `${game.teams.away.team.name} at ${game.teams.home.team.name} - ${game.gameDate}`;
+                    // Convert gameDate to Eastern Time
+                    const gameDateUTC = new Date(game.gameDate);
+                    const options = {
+                        timeZone: 'America/New_York',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    };
+                    const easternTime = gameDateUTC.toLocaleString('en-US', options);
+                    li.textContent = `${game.teams.away.team.name} at ${game.teams.home.team.name} - ${easternTime} ET`;
                     scheduleList.appendChild(li);
                 });
             })
