@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB Scores</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .scoreboard {
+            max-width: 400px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .score-date {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .score-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .score-row:last-child {
+            border-bottom: none;
+        }
+        .team {
+            display: flex;
+            align-items: center;
+            min-width: 110px;
+        }
+        .team-logo {
+            width: 28px;
+            height: 28px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background: #eee;
+        }
+        .score {
+            font-size: 1.2em;
+            font-weight: bold;
+            width: 30px;
+            text-align: center;
+        }
+        .status {
+            font-size: 0.95em;
+            color: #555;
+            min-width: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="scoreboard">
+        <div id="score-date" class="score-date"></div>
+        <div id="scores"></div>
+    </div>
+    <script>
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        // Helper to get team logo from MLB CDN
+        function getTeamLogo(teamId) {
+            return `https://www.mlbstatic.com/team-logos/${teamId}.svg`;
+        }
+
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${todayStr}&hydrate=team,linescore`)
+            .then(response => response.json())
+            .then(data => {
+                const dateObj = data.dates[0];
+                const games = dateObj?.games || [];
+                const scoresDiv = document.getElementById('scores');
+                const dateDiv = document.getElementById('score-date');
+                // Format date like "Saturday, May 31st"
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const dateDisplay = new Date(todayStr).toLocaleDateString('en-US', dateOptions);
+                dateDiv.textContent = dateDisplay;
+
+                if (games.length === 0) {
+                    scoresDiv.innerHTML = "<div>No games scheduled.</div>";
+                    return;
+                }
+
+                games.forEach(game => {
+                    const away = game.teams.away;
+                    const home = game.teams.home;
+                    const status = game.status.detailedState;
+                    const awayLogo = getTeamLogo(away.team.id);
+                    const homeLogo = getTeamLogo(home.team.id);
+
+                    // Scores (may be undefined if game hasn't started)
+                    const awayScore = away.score !== undefined ? away.score : '';
+                    const homeScore = home.score !== undefined ? home.score : '';
+
+                    // Row HTML
+                    const row = document.createElement('div');
+                    row.className = 'score-row';
+                    row.innerHTML = `
+                        <div class="team">
+                            <img class="team-logo" src="${awayLogo}" alt="${away.team.abbreviation}">
+                            <span>${away.team.abbreviation}</span>
+                        </div>
+                        <div class="score">${awayScore}</div>
+                        <div class="status">${status}</div>
+                        <div class="score">${homeScore}</div>
+                        <div class="team">
+                            <img class="team-logo" src="${homeLogo}" alt="${home.team.abbreviation}">
+                            <span>${home.team.abbreviation}</span>
+                        </div>
+                    `;
+                    scoresDiv.appendChild(row);
+                });
+            })
+            .catch(() => {
+                document.getElementById('scores').textContent = 'Could not load scores.';
+            });
+    </script>
+</body>
+</html>
