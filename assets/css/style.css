@@ -18,7 +18,7 @@ header h1 {
     margin: 0;
     font-size: 2.5em;
     font-weight: normal;
-    text-transform: uppercase;
+    text-transform: propercase;
     letter-spacing: 2px;
     font-family: 'Courier New', Courier, monospace;
     text-shadow: 1px 1px 2px #000000;
@@ -107,4 +107,18 @@ h2 {
 
 .league-table table {
     width: 100%;
+}
+
+a {
+    color: #d4ad00; /* Google blue, or choose any hex/rgb color you like */
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #e4e2e9; /* Purple for visited links */
+}
+
+a:hover, a:focus {
+    color: #7a7e8b; /* Gold on hover/focus */
+    text-decoration: underline;
 }
