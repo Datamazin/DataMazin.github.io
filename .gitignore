@@ -1,0 +1,15 @@
+# Local Claude Code context — intentionally untracked, and kept out of the
+# deployed site (it would otherwise be served at /CLAUDE.md).
+CLAUDE.md
+
+# Playwright and friends, installed ad hoc for the local page checks described
+# in .claude/skills/static-site-ship-check.
+node_modules/
+package-lock.json
+
+# Staging directory the Pages workflow builds; never committed.
+_site/
+
+# OS noise
+.DS_Store
+Thumbs.db
