@@ -1,0 +1,65 @@
+name: Deploy to GitHub Pages
+
+"on":
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy at a time; don't cancel one mid-flight to avoid a half-published site.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Serve site locally
+        run: |
+          nohup python3 -m http.server 8080 > server.log 2>&1 &
+          sleep 2
+
+      - name: Check every page loads without errors
+        run: node .claude/skills/static-site-ship-check/scripts/check-pages.js --base http://localhost:8080
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      # upload-pages-artifact publishes exactly what it's given — unlike the
+      # legacy Jekyll-based build, it won't implicitly drop .git/.github/.claude.
+      # Stage a clean copy so those never end up served on the live site.
+      - name: Stage site files
+        run: |
+          mkdir -p _site
+          rsync -a --exclude='.git' --exclude='.github' --exclude='.claude' --exclude='_site' ./ _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
