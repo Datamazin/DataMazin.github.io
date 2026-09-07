@@ -4,29 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../assets/images/logo.png">
-    <title>Blog - Business Intelligence Consulting</title>
+    <title>MLB Stats Tools | DATAmazin</title>
+    <meta name="description" content="Live MLB scores, schedule, and standings built on the public MLB Stats API — the same live-data pattern DATAmazin applies to business dashboards.">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <header>
         <img src="../assets/images/logo.png" alt="DATAmazin logo" class="site-logo">
-        <h1>DataMazin Blog</h1>
+        <h1>MLB Stats Tools</h1>
         <nav>
             <ul>
                 <li><a href="../index.html">Home</a></li>
-                <li><a href="../about.html">About</a></li>
+                <li><a href="../services.html">Services</a></li>
+                <li><a href="../ai-insights.html">AI Insights Demo</a></li>
+                <li><a href="../case-studies.html">Case Studies</a></li>
+                <li><a href="../resources.html">Resources</a></li>
+                <li><a href="../blog/index.html">Blog</a></li>
+                <li><a href="../about.html">About Us</a></li>
             </ul>
         </nav>
     </header>
-    <main>
-        <h2>Latest Posts</h2>
-        <ul>
-            <li><a href="posts/sample-post.html">Sample Blog Post</a></li>
-            <!-- Additional blog posts can be added here -->
-        </ul>
+    <main class="container">
+        <section class="hero-small">
+            <h2>Live Baseball Data, Built the Same Way We Build Dashboards</h2>
+            <p>Small, self-contained pages running on the free, public <a href="https://statsapi.mlb.com" target="_blank" rel="noopener noreferrer">MLB Stats API</a> &mdash; no server, no API key, nothing cached. It's the same live-data pattern we apply to sales, inventory, and financial reporting, just pointed at baseball.</p>
+        </section>
+
+        <section class="section">
+            <div class="card-grid">
+                <a class="card resource-card" href="mlb-today-scores.html">
+                    <span class="card-icon">⚾</span>
+                    <h3>Today's Scores</h3>
+                    <p>Live scoreboard for every game happening today, with team logos and inning-by-inning status.</p>
+                </a>
+                <a class="card resource-card" href="mlb-scores.html">
+                    <span class="card-icon">📅</span>
+                    <h3>Scores by Date</h3>
+                    <p>A clean box-score view of results, pulled straight from the live API.</p>
+                </a>
+                <a class="card resource-card" href="mlb-schedule.html">
+                    <span class="card-icon">🗓️</span>
+                    <h3>Schedule</h3>
+                    <p>Upcoming games with start times converted to Eastern Time.</p>
+                </a>
+                <a class="card resource-card" href="mlb-standings.html">
+                    <span class="card-icon">🏆</span>
+                    <h3>Standings</h3>
+                    <p>Current American League and National League standings, side by side.</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="section center-link">
+            <h2 class="section-heading">Want to see AI read this data for you?</h2>
+            <p class="section-intro">Our insight engine takes the same season leaderboards and writes its own plain-English narrative about who's performing and why it matters.</p>
+            <a class="btn btn-primary" href="../ai-insights.html">Try the Live AI Insight Demos</a>
+        </section>
     </main>
     <footer>
-        <p>&copy; <span class="current-year"></span> DataMazin. All rights reserved.</p>
+        <p>&copy; <span class="current-year"></span> <a href="../about.html">DATAmazin</a>. All rights reserved.</p>
     </footer>
     <script src="../assets/js/main.js"></script>
 </body>

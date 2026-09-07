@@ -58,10 +58,26 @@
     </style>
 </head>
 <body>
-    <div class="scoreboard">
-        <div id="score-date" class="score-date"></div>
-        <div id="scores"></div>
-    </div>
+    <header>
+        <img src="../assets/images/logo.png" alt="DATAmazin logo" class="site-logo">
+        <h1>Today's MLB Scores</h1>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">MLB Tools</a></li>
+                <li><a href="../ai-insights.html">AI Insights Demo</a></li>
+                <li><a href="../resources.html">Resources</a></li>
+                <li><a href="../blog/index.html">Blog</a></li>
+                <li><a href="../about.html">About Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="scoreboard">
+            <div id="score-date" class="score-date"></div>
+            <div id="scores"></div>
+        </div>
+    </main>
     <script>
         // Get today's date in YYYY-MM-DD format
         const today = new Date();
@@ -127,7 +143,7 @@
             });
     </script>
     <footer>
-        <p>&copy; <span class="current-year"></span> DataMazin. All rights reserved.</p>
+        <p>&copy; <span class="current-year"></span> <a href="../about.html">DATAmazin</a>. All rights reserved.</p>
     </footer>
     <script src="../assets/js/main.js"></script>
 </body>
