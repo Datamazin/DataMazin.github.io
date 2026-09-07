@@ -153,6 +153,21 @@ a:hover, a:focus {
     text-decoration: underline;
 }
 
+/* Content links sit on the light page background, where the gold and the
+   near-white visited colour above are both too faint to read. Dark green
+   instead, visited included. Buttons are excluded so they keep their own
+   colours, and header/footer links keep the light colours that work
+   against the dark green bars. */
+main a:not(.btn),
+main a:not(.btn):visited {
+    color: #334608;
+}
+
+main a:not(.btn):hover,
+main a:not(.btn):focus {
+    color: #5c7d0f;
+}
+
 /* ---------- Layout helpers ---------- */
 
 main.container {
