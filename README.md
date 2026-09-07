@@ -7,13 +7,18 @@ This repository contains the source code for a Business Intelligence consulting 
 The project has the following structure:
 
 ```
-bi-consulting-website
+datamazin-website
 ├── index.html          # Homepage of the website
 ├── about.html          # About section of the consulting firm
+├── services.html       # Detailed BI & AI service offerings
+├── case-studies.html   # Illustrative case studies
+├── ai-insights.html    # Live, in-browser AI insight demo (Currency Risk Monitor)
 ├── blog
 │   ├── index.html      # Main page for the blog
 │   └── posts
 │       └── sample-post.html  # Sample blog post
+├── mlbapi
+│   └── ...             # MLB stats API demo pages
 ├── assets
 │   ├── css
 │   │   └── style.css   # CSS styles for the website

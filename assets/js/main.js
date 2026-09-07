@@ -1,1 +1,3 @@
-// This file is intentionally left blank.
+document.querySelectorAll('.current-year').forEach((yearElement) => {
+	yearElement.textContent = new Date().getFullYear();
+});

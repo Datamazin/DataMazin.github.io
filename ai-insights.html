@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live AI Insight Demos | DATAmazin</title>
+    <meta name="description" content="Live, in-browser demos of automated AI-generated insight narratives, built on real foreign-exchange data and current MLB season stats.">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Live AI Insight Demos</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="case-studies.html">Case Studies</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="blog/index.html">Blog</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <section class="hero-small">
+            <h2>Live AI Insight Demos</h2>
+            <p>Both demos below run entirely in your browser: they pull live public data and an automated insight-generation engine writes the narrative &mdash; the same category of capability behind Power BI Smart Narratives, Key Influencers, and Microsoft Fabric Copilot. No server, no API key, nothing simulated.</p>
+        </section>
+
+        <h2 class="section-heading">Demo 1: Currency Risk Monitor</h2>
+        <p class="section-intro">Live 30-day foreign-exchange data, analyzed for trend, volatility, and business risk.</p>
+
+        <section class="card insight-controls">
+            <h3>1. Choose currencies to monitor (base: USD)</h3>
+            <div class="currency-checkboxes" id="currency-checkboxes">
+                <label><input type="checkbox" value="EUR" checked> EUR &mdash; Euro</label>
+                <label><input type="checkbox" value="GBP" checked> GBP &mdash; British Pound</label>
+                <label><input type="checkbox" value="JPY" checked> JPY &mdash; Japanese Yen</label>
+                <label><input type="checkbox" value="CAD" checked> CAD &mdash; Canadian Dollar</label>
+                <label><input type="checkbox" value="AUD"> AUD &mdash; Australian Dollar</label>
+                <label><input type="checkbox" value="CHF"> CHF &mdash; Swiss Franc</label>
+                <label><input type="checkbox" value="CNY"> CNY &mdash; Chinese Yuan</label>
+                <label><input type="checkbox" value="MXN"> MXN &mdash; Mexican Peso</label>
+            </div>
+            <button id="generate-btn" type="button" class="btn btn-primary">Generate AI Insight</button>
+            <p class="insight-status" id="insight-status"></p>
+        </section>
+
+        <section id="insight-summary" class="insight-summary-banner" hidden></section>
+
+        <div id="insight-results" class="card-grid"></div>
+
+        <h2 class="section-heading">Demo 2: MLB Season Top Player Insights</h2>
+        <p class="section-intro">Live current-season leaderboards from the official MLB Stats API, narrated automatically &mdash; the same pattern applied to sports data instead of finance data.</p>
+
+        <section class="card insight-controls">
+            <h3>1. Choose stat categories to analyze</h3>
+            <div class="currency-checkboxes" id="mlb-category-checkboxes">
+                <label><input type="checkbox" value="homeRuns" data-group="hitting" checked> Home Runs</label>
+                <label><input type="checkbox" value="battingAverage" data-group="hitting" checked> Batting Average</label>
+                <label><input type="checkbox" value="runsBattedIn" data-group="hitting" checked> RBI</label>
+                <label><input type="checkbox" value="stolenBases" data-group="hitting"> Stolen Bases</label>
+                <label><input type="checkbox" value="onBasePlusSlugging" data-group="hitting"> OPS</label>
+                <label><input type="checkbox" value="earnedRunAverage" data-group="pitching" checked> ERA</label>
+                <label><input type="checkbox" value="strikeouts" data-group="pitching" checked> Strikeouts</label>
+                <label><input type="checkbox" value="wins" data-group="pitching"> Wins</label>
+                <label><input type="checkbox" value="saves" data-group="pitching"> Saves</label>
+            </div>
+            <button id="mlb-generate-btn" type="button" class="btn btn-primary">Generate MLB Insight</button>
+            <p class="insight-status" id="mlb-insight-status"></p>
+        </section>
+
+        <section id="mlb-insight-summary" class="insight-summary-banner" hidden></section>
+
+        <div id="mlb-insight-results" class="card-grid"></div>
+
+        <section class="card ai-explainer">
+            <h3>How these demos work</h3>
+            <ul>
+                <li><strong>Live data:</strong> Demo 1 uses 30&ndash;35 days of exchange-rate history from the free, keyless <a href="https://frankfurter.dev" target="_blank" rel="noopener noreferrer">Frankfurter API</a> (European Central Bank reference rates). Demo 2 uses current-season leaderboards from the official, public <a href="https://statsapi.mlb.com" target="_blank" rel="noopener noreferrer">MLB Stats API</a>.</li>
+                <li><strong>Automated analysis:</strong> trend, volatility, gaps between leaders, and cross-category standouts are all computed client-side, in JavaScript, right now.</li>
+                <li><strong>Natural-language generation:</strong> a rule-based narrative engine turns those statistics into plain-English insight &mdash; no server, no API key, nothing to configure.</li>
+                <li><strong>In a real engagement</strong> we'd extend this exact pattern using Microsoft Fabric Copilot or Azure OpenAI against your own sales, inventory, or financial data instead of public FX rates or box scores.</li>
+            </ul>
+            <p><em>Demonstration only &mdash; not financial, investment, or fantasy-baseball advice.</em></p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; <span class="current-year"></span> <a href="about.html">DATAmazin</a> All rights reserved.</p>
+    </footer>
+    <script src="assets/js/main.js"></script>
+    <script>
+        const CURRENCY_NAMES = {
+            EUR: 'Euro', GBP: 'British Pound', JPY: 'Japanese Yen', CAD: 'Canadian Dollar',
+            AUD: 'Australian Dollar', CHF: 'Swiss Franc', CNY: 'Chinese Yuan', MXN: 'Mexican Peso'
+        };
+
+        function formatDate(d) {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function niceDate(dateStr) {
+            return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function mean(arr) {
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        function stdev(arr) {
+            const m = mean(arr);
+            return Math.sqrt(mean(arr.map(x => (x - m) ** 2)));
+        }
+
+        function volatilityLabel(vol) {
+            if (vol < 0.25) return 'low';
+            if (vol < 0.6) return 'moderate';
+            return 'elevated';
+        }
+
+        function buildSparkline(series) {
+            const w = 220, h = 50, pad = 4;
+            const min = Math.min(...series);
+            const max = Math.max(...series);
+            const range = (max - min) || 1;
+            const points = series.map((v, i) => {
+                const x = pad + (i / (series.length - 1)) * (w - pad * 2);
+                const y = h - pad - ((v - min) / range) * (h - pad * 2);
+                return `${x.toFixed(1)},${y.toFixed(1)}`;
+            }).join(' ');
+            const lastUp = series[series.length - 1] >= series[0];
+            const stroke = lastUp ? '#c62828' : '#2e7d32';
+            return `<svg class="sparkline" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+                <polyline points="${points}" fill="none" stroke="${stroke}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>`;
+        }
+
+        function buildNarrative(code, stats) {
+            const name = CURRENCY_NAMES[code] || code;
+            const dir = stats.pctChange >= 0 ? 'strengthened' : 'weakened';
+            const oppDir = stats.pctChange >= 0 ? 'weakened' : 'strengthened';
+            const magnitude = Math.abs(stats.pctChange).toFixed(2);
+            const volWord = volatilityLabel(stats.volatility);
+            const trendWord = Math.abs(stats.pctChange) < 0.3 ? 'held roughly flat against' : `${dir} against`;
+
+            let sentence1;
+            if (Math.abs(stats.pctChange) < 0.3) {
+                sentence1 = `The US Dollar has ${trendWord} the ${name} over the period, moving just ${magnitude}% from ${stats.first.toFixed(4)} to ${stats.last.toFixed(4)}.`;
+            } else {
+                sentence1 = `The US Dollar has ${dir} ${magnitude}% against the ${name}, moving from ${stats.first.toFixed(4)} to ${stats.last.toFixed(4)} since ${niceDate(stats.startDate)}.`;
+            }
+
+            const sentence2 = `Day-to-day volatility has been ${volWord} (${stats.volatility.toFixed(2)}% average daily swing), with the sharpest single-day move of ${stats.biggestMove.pct.toFixed(2)}% on ${niceDate(stats.biggestMove.date)}.`;
+
+            let sentence3;
+            if (Math.abs(stats.pctChange) >= 0.3) {
+                sentence3 = stats.pctChange >= 0
+                    ? `For a US business with revenue or receivables in ${code}, that ${name} exposure now converts to fewer dollars than it did a month ago &mdash; the ${name} has ${oppDir} against USD.`
+                    : `For a US business with costs or payables in ${code}, that exposure now costs more dollars to settle than it did a month ago &mdash; the ${name} has ${oppDir} against USD.`;
+            } else {
+                sentence3 = `That stability means ${code}-denominated budgets are unlikely to see meaningful currency-driven surprises this period.`;
+            }
+
+            return `${sentence1} ${sentence2} ${sentence3}`;
+        }
+
+        function computeStats(dates, series) {
+            const first = series[0];
+            const last = series[series.length - 1];
+            const pctChange = ((last - first) / first) * 100;
+            const dailyChanges = [];
+            for (let i = 1; i < series.length; i++) {
+                dailyChanges.push(((series[i] - series[i - 1]) / series[i - 1]) * 100);
+            }
+            const volatility = stdev(dailyChanges);
+            let biggestIdx = 0;
+            dailyChanges.forEach((v, i) => {
+                if (Math.abs(v) > Math.abs(dailyChanges[biggestIdx])) biggestIdx = i;
+            });
+            return {
+                first, last, pctChange, volatility,
+                min: Math.min(...series), max: Math.max(...series),
+                startDate: dates[0], endDate: dates[dates.length - 1],
+                biggestMove: { pct: dailyChanges[biggestIdx] || 0, date: dates[biggestIdx + 1] || dates[dates.length - 1] }
+            };
+        }
+
+        function renderSummary(allStats) {
+            const banner = document.getElementById('insight-summary');
+            const codes = Object.keys(allStats);
+            if (codes.length === 0) { banner.hidden = true; return; }
+
+            let topMoveCode = codes[0], topVolCode = codes[0];
+            codes.forEach(c => {
+                if (Math.abs(allStats[c].pctChange) > Math.abs(allStats[topMoveCode].pctChange)) topMoveCode = c;
+                if (allStats[c].volatility > allStats[topVolCode].volatility) topVolCode = c;
+            });
+
+            const move = allStats[topMoveCode];
+            const vol = allStats[topVolCode];
+            let text = `Of the ${codes.length} currenc${codes.length === 1 ? 'y' : 'ies'} monitored, <strong>${topMoveCode}</strong> shows the most significant move this period (${move.pctChange.toFixed(2)}% vs. USD)`;
+            if (topVolCode !== topMoveCode) {
+                text += `, while <strong>${topVolCode}</strong> carried the most day-to-day volatility (${vol.volatility.toFixed(2)}% average daily swing)`;
+            }
+            text += `. This is the type of signal an automated monitoring system &mdash; like Power BI's Key Influencers or a custom Fabric Copilot alert &mdash; would surface first, before anyone opens the dashboard.`;
+
+            banner.innerHTML = `<h3>🔑 Key Insight</h3><p>${text}</p>`;
+            banner.hidden = false;
+        }
+
+        function renderCards(dates, ratesByCurrency) {
+            const results = document.getElementById('insight-results');
+            results.innerHTML = '';
+            const allStats = {};
+
+            Object.keys(ratesByCurrency).forEach(code => {
+                const series = ratesByCurrency[code];
+                const stats = computeStats(dates, series);
+                allStats[code] = stats;
+
+                const card = document.createElement('div');
+                card.className = 'card insight-card';
+                const trendClass = stats.pctChange >= 0 ? 'trend-up' : 'trend-down';
+                const arrow = stats.pctChange >= 0 ? '▲' : '▼';
+                card.innerHTML = `
+                    <h3>${code} <small>&mdash; ${CURRENCY_NAMES[code] || ''}</small></h3>
+                    ${buildSparkline(series)}
+                    <div class="stats-row">
+                        <div class="stat"><strong class="${trendClass}">${arrow} ${Math.abs(stats.pctChange).toFixed(2)}%</strong>30-day change</div>
+                        <div class="stat"><strong>${stats.min.toFixed(3)}&ndash;${stats.max.toFixed(3)}</strong>range</div>
+                        <div class="stat"><strong>${stats.volatility.toFixed(2)}%</strong>${volatilityLabel(stats.volatility)} volatility</div>
+                    </div>
+                    <div class="narrative">${buildNarrative(code, stats)}</div>
+                `;
+                results.appendChild(card);
+            });
+
+            renderSummary(allStats);
+        }
+
+        async function generateInsight() {
+            const status = document.getElementById('insight-status');
+            const btn = document.getElementById('generate-btn');
+            const selected = Array.from(document.querySelectorAll('#currency-checkboxes input:checked')).map(i => i.value);
+
+            if (selected.length === 0) {
+                status.textContent = 'Select at least one currency to monitor.';
+                return;
+            }
+
+            btn.disabled = true;
+            status.textContent = 'Fetching live exchange-rate data...';
+            document.getElementById('insight-summary').hidden = true;
+            document.getElementById('insight-results').innerHTML = '';
+
+            const end = new Date();
+            const start = new Date();
+            start.setDate(start.getDate() - 35);
+            const startStr = formatDate(start);
+            const endStr = formatDate(end);
+
+            try {
+                const res = await fetch(`https://api.frankfurter.dev/v1/${startStr}..${endStr}?from=USD&to=${selected.join(',')}`);
+                if (!res.ok) throw new Error('Request failed');
+                const data = await res.json();
+                const dates = Object.keys(data.rates).sort();
+
+                if (dates.length < 3) {
+                    status.textContent = 'Not enough recent trading data to generate an insight yet &mdash; try again shortly.';
+                    btn.disabled = false;
+                    return;
+                }
+
+                const ratesByCurrency = {};
+                selected.forEach(code => {
+                    ratesByCurrency[code] = dates.map(d => data.rates[d][code]).filter(v => v !== undefined);
+                });
+
+                status.textContent = `Analysis based on ${dates.length} trading days, ${niceDate(dates[0])} to ${niceDate(dates[dates.length - 1])}.`;
+                renderCards(dates, ratesByCurrency);
+            } catch (err) {
+                status.textContent = 'Could not load live data right now — please try again in a moment.';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('generate-btn').addEventListener('click', generateInsight);
+        generateInsight();
+
+        const CATEGORY_META = {
+            homeRuns: { label: 'Home Runs', group: 'hitting' },
+            battingAverage: { label: 'Batting Average', group: 'hitting' },
+            runsBattedIn: { label: 'RBI', group: 'hitting' },
+            stolenBases: { label: 'Stolen Bases', group: 'hitting' },
+            onBasePlusSlugging: { label: 'OPS', group: 'hitting' },
+            earnedRunAverage: { label: 'ERA', group: 'pitching' },
+            strikeouts: { label: 'Strikeouts', group: 'pitching' },
+            wins: { label: 'Wins', group: 'pitching' },
+            saves: { label: 'Saves', group: 'pitching' }
+        };
+
+        function currentSeasonYear() {
+            const now = new Date();
+            // Before March, the new season hasn't started yet — use the prior completed season.
+            return now.getMonth() < 2 ? now.getFullYear() - 1 : now.getFullYear();
+        }
+
+        async function fetchLeaderGroup(categories, group, season) {
+            if (categories.length === 0) return {};
+            const url = `https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=${categories.join(',')}&season=${season}&sportId=1&statGroup=${group}&limit=5`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Request failed');
+            const data = await res.json();
+            const byCategory = {};
+            (data.leagueLeaders || []).forEach(entry => {
+                byCategory[entry.leaderCategory] = (entry.leaders || []).map(l => ({
+                    rank: l.rank,
+                    name: l.person.fullName,
+                    team: l.team ? l.team.name : '',
+                    value: l.value
+                }));
+            });
+            return byCategory;
+        }
+
+        function closenessPhrase(leaderVal, secondVal) {
+            const a = parseFloat(leaderVal), b = parseFloat(secondVal);
+            if (!isFinite(a) || !isFinite(b) || b === 0) return 'a clear lead';
+            const relGap = Math.abs(a - b) / Math.abs(b) * 100;
+            if (relGap < 3) return 'a razor-thin margin';
+            if (relGap < 10) return 'a modest edge';
+            return 'a commanding lead';
+        }
+
+        function buildPlayerNarrative(categoryKey, leaders) {
+            const meta = CATEGORY_META[categoryKey];
+            const leader = leaders[0];
+            if (!leader) return 'No data available for this category yet.';
+            const second = leaders[1];
+            let sentence = `${leader.name} (${leader.team}) leads MLB in ${meta.label} this season with ${leader.value}`;
+            sentence += second
+                ? `, holding ${closenessPhrase(leader.value, second.value)} over ${second.name} (${second.team}) at ${second.value}.`
+                : '.';
+            return sentence;
+        }
+
+        function renderMlbSummary(resultsByCategory) {
+            const banner = document.getElementById('mlb-insight-summary');
+            const categories = Object.keys(resultsByCategory);
+            if (categories.length === 0) { banner.hidden = true; return; }
+
+            const appearanceCount = {};
+            const leadCount = {};
+            const teamAppearances = {};
+            categories.forEach(cat => {
+                resultsByCategory[cat].forEach(entry => {
+                    appearanceCount[entry.name] = (appearanceCount[entry.name] || 0) + 1;
+                    if (entry.rank === 1) leadCount[entry.name] = (leadCount[entry.name] || 0) + 1;
+                    teamAppearances[entry.team] = (teamAppearances[entry.team] || 0) + 1;
+                });
+            });
+
+            const sentences = [];
+
+            const multiLeader = Object.keys(leadCount).find(name => leadCount[name] > 1);
+            if (multiLeader) {
+                const led = categories
+                    .filter(cat => resultsByCategory[cat][0] && resultsByCategory[cat][0].name === multiLeader)
+                    .map(cat => CATEGORY_META[cat].label);
+                sentences.push(`<strong>${multiLeader}</strong> leads MLB in ${led.length} of the categories tracked here (${led.join(', ')}) &mdash; a strong signal in any MVP conversation.`);
+            } else {
+                let mostVersatile = Object.keys(appearanceCount)[0];
+                Object.keys(appearanceCount).forEach(name => {
+                    if (appearanceCount[name] > appearanceCount[mostVersatile]) mostVersatile = name;
+                });
+                if (mostVersatile && appearanceCount[mostVersatile] > 1) {
+                    sentences.push(`<strong>${mostVersatile}</strong> appears in the top 5 of ${appearanceCount[mostVersatile]} categories tracked here, making them one of the most well-rounded performers this season.`);
+                }
+            }
+
+            let topTeam = Object.keys(teamAppearances)[0];
+            Object.keys(teamAppearances).forEach(team => {
+                if (teamAppearances[team] > teamAppearances[topTeam]) topTeam = team;
+            });
+            if (topTeam && teamAppearances[topTeam] > 1) {
+                sentences.push(`The <strong>${topTeam}</strong> have the most top-5 appearances of any club across the categories analyzed (${teamAppearances[topTeam]}).`);
+            }
+
+            if (sentences.length === 0) {
+                sentences.push('Leadership is spread across different players and teams this season &mdash; no single standout dominates multiple categories yet.');
+            }
+
+            banner.innerHTML = `<h3>🔑 Key Insight</h3><p>${sentences.join(' ')}</p>`;
+            banner.hidden = false;
+        }
+
+        function renderMlbCards(resultsByCategory) {
+            const results = document.getElementById('mlb-insight-results');
+            results.innerHTML = '';
+
+            Object.keys(resultsByCategory).forEach(cat => {
+                const leaders = resultsByCategory[cat];
+                const meta = CATEGORY_META[cat];
+                const card = document.createElement('div');
+                card.className = 'card insight-card';
+                const listItems = leaders.map(l => `
+                    <li><span><span class="rank">${l.rank}.</span>${l.name} <small>&mdash; ${l.team}</small></span><span class="value">${l.value}</span></li>
+                `).join('');
+                card.innerHTML = `
+                    <h3>${meta.label}</h3>
+                    <ol class="leaderboard">${listItems}</ol>
+                    <div class="narrative">${buildPlayerNarrative(cat, leaders)}</div>
+                `;
+                results.appendChild(card);
+            });
+        }
+
+        async function generateMlbInsight() {
+            const status = document.getElementById('mlb-insight-status');
+            const btn = document.getElementById('mlb-generate-btn');
+            const checked = Array.from(document.querySelectorAll('#mlb-category-checkboxes input:checked'));
+
+            if (checked.length === 0) {
+                status.textContent = 'Select at least one stat category to analyze.';
+                return;
+            }
+
+            const hitting = checked.filter(i => i.dataset.group === 'hitting').map(i => i.value);
+            const pitching = checked.filter(i => i.dataset.group === 'pitching').map(i => i.value);
+            const season = currentSeasonYear();
+
+            btn.disabled = true;
+            status.textContent = `Fetching live ${season} season leaderboards...`;
+            document.getElementById('mlb-insight-summary').hidden = true;
+            document.getElementById('mlb-insight-results').innerHTML = '';
+
+            try {
+                const [hittingResults, pitchingResults] = await Promise.all([
+                    fetchLeaderGroup(hitting, 'hitting', season),
+                    fetchLeaderGroup(pitching, 'pitching', season)
+                ]);
+                const resultsByCategory = Object.assign({}, hittingResults, pitchingResults);
+
+                if (Object.keys(resultsByCategory).length === 0) {
+                    status.textContent = `No leaderboard data available for the ${season} season yet &mdash; try again once the season is underway.`;
+                    btn.disabled = false;
+                    return;
+                }
+
+                status.textContent = `Analysis based on live ${season} regular-season leaderboards.`;
+                renderMlbCards(resultsByCategory);
+                renderMlbSummary(resultsByCategory);
+            } catch (err) {
+                status.textContent = 'Could not load live MLB data right now — please try again in a moment.';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('mlb-generate-btn').addEventListener('click', generateMlbInsight);
+        generateMlbInsight();
+    </script>
+</body>
+</html>
