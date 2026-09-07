@@ -26,7 +26,7 @@
     <main class="container">
         <section class="hero-small">
             <h2>Live AI Insight Demos</h2>
-            <p>Both demos below run entirely in your browser: they pull live public data and an automated insight-generation engine writes the narrative &mdash; the same category of capability behind Power BI Smart Narratives, Key Influencers, and Microsoft Fabric Copilot. No server, no API key, nothing simulated.</p>
+            <p>Both demos below run entirely in your browser: they pull live public data and an automated insight-generation engine writes the narrative &mdash; the same category of capability behind Microsoft Fabric Copilot and Fabric IQ. No server, no API key, nothing simulated.</p>
         </section>
 
         <h2 class="section-heading">Demo 1: Currency Risk Monitor</h2>
@@ -207,7 +207,7 @@
             if (topVolCode !== topMoveCode) {
                 text += `, while <strong>${topVolCode}</strong> carried the most day-to-day volatility (${vol.volatility.toFixed(2)}% average daily swing)`;
             }
-            text += `. This is the type of signal an automated monitoring system &mdash; like Power BI's Key Influencers or a custom Fabric Copilot alert &mdash; would surface first, before anyone opens the dashboard.`;
+            text += `. This is the type of signal an automated monitoring system &mdash; like a Fabric IQ model or a custom Copilot alert &mdash; would surface first, before anyone opens the dashboard.`;
 
             banner.innerHTML = `<h3>🔑 Key Insight</h3><p>${text}</p>`;
             banner.hidden = false;
